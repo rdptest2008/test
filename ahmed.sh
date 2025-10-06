@@ -1,15 +1,15 @@
 #!/bin/bash
 set -euo pipefail
 
-tmux new -s work3
+tmux new -d -s work3
 
 mkdir -p x
 cd x
 
 openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=ea.com"
 
-wget https://www.7-zip.org/a/7z2501-linux-x64.tar.xz
-tar -xvf 7z2501-linux-x64.tar.xz
+wget -q https://www.7-zip.org/a/7z2501-linux-x64.tar.xz
+tar -xf 7z2501-linux-x64.tar.xz
 
 SEVENZ_BIN=$(find . -maxdepth 2 -type f -name '7zz' -print -quit)
 if [ -z "$SEVENZ_BIN" ]; then
@@ -18,11 +18,11 @@ if [ -z "$SEVENZ_BIN" ]; then
 fi
 chmod +x "$SEVENZ_BIN"
 
-wget https://github.com/XTLS/Xray-core/releases/download/v25.9.11/Xray-linux-64.zip
+wget -q https://github.com/XTLS/Xray-core/releases/download/v25.9.11/Xray-linux-64.zip
 
-"$SEVENZ_BIN" x Xray-linux-64.zip
+"$SEVENZ_BIN" x Xray-linux-64.zip >/dev/null
 
-XRAY_BIN=$(find . -maxdepth 3 -type f \( -name 'xray' -o -name 'Xray' \) -print -quit)
+XRAY_BIN=$(find . -maxdepth 3 -type f -name 'xray' -print -quit)
 if [ -z "$XRAY_BIN" ]; then
   echo "xray not found"
   exit 1
