@@ -32,7 +32,9 @@ chmod +x "$XRAY_BIN"
 cat <<'EOF' > config.json
 {
   "log": {
-    "loglevel": "debug"
+    "access": "access.log",
+    "error": "error.log",
+    "loglevel": "info"
   },
   "inbounds": [
     {
@@ -45,7 +47,7 @@ cat <<'EOF' > config.json
           {
             "id": "7c6de543-881b-4582-8017-9e1fe8c90d64",
             "level": 0,
-            "decryption": "none"
+            "email": "user@example.com"
           }
         ],
         "decryption": "none"
@@ -54,13 +56,23 @@ cat <<'EOF' > config.json
         "network": "tcp",
         "security": "tls",
         "tlsSettings": {
+          "alpn": ["h2", "http/1.1"],
           "certificates": [
             {
               "certificateFile": "cert.pem",
               "keyFile": "key.pem"
             }
           ],
-          "alpn": ["http/1.1"]
+          "minVersion": "1.3",
+          "maxVersion": "1.3",
+          "preferServerCipherSuites": true
+        },
+        "sockopt": {
+          "tcpFastOpen": true,
+          "tcpNoDelay": true,
+          "tcpKeepAliveIdle": 20,
+          "tcpKeepAliveInterval": 10,
+          "mark": 255
         }
       }
     }
@@ -68,9 +80,36 @@ cat <<'EOF' > config.json
   "outbounds": [
     {
       "protocol": "freedom",
-      "settings": {}
+      "settings": {},
+      "streamSettings": {
+        "sockopt": {
+          "tcpFastOpen": true,
+          "tcpNoDelay": true
+        }
+      }
     }
-  ]
+  ],
+  "policy": {
+    "levels": {
+      "0": {
+        "handshake": 4,
+        "connIdle": 300,
+        "uplinkOnly": 0,
+        "downlinkOnly": 0
+      }
+    },
+    "system": {
+      "statsOutboundUplink": true,
+      "statsOutboundDownlink": true
+    }
+  },
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": []
+  },
+  "dns": {
+    "servers": ["1.1.1.1", "8.8.8.8", "9.9.9.9"]
+  }
 }
 EOF
 
