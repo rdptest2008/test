@@ -34,7 +34,7 @@ cat <<'EOF' > config.json
   "log": {
     "access": "access.log",
     "error": "error.log",
-    "loglevel": "info"
+    "loglevel": "debug"
   },
   "inbounds": [
     {
@@ -63,15 +63,15 @@ cat <<'EOF' > config.json
               "keyFile": "key.pem"
             }
           ],
-          "minVersion": "1.3",
+          "minVersion": "1.2",
           "maxVersion": "1.3",
           "preferServerCipherSuites": true
         },
         "sockopt": {
           "tcpFastOpen": true,
           "tcpNoDelay": true,
-          "tcpKeepAliveIdle": 20,
-          "tcpKeepAliveInterval": 10,
+          "tcpKeepAliveIdle": 2000,
+          "tcpKeepAliveInterval": 1000000,
           "mark": 255
         }
       }
