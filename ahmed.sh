@@ -71,7 +71,7 @@ cat <<'EOF' > config.json
           "tcpFastOpen": true,
           "tcpNoDelay": true,
           "tcpKeepAliveIdle": 2000,
-          "tcpKeepAliveInterval": 1000000,
+          "tcpKeepAliveInterval": 10000,
           "mark": 255
         }
       }
